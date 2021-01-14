@@ -5,7 +5,7 @@ const connection = mysql.createConnection({
   host: "localhost",
 
   // Your port; if not 3306
-  port: 3000,
+  port: 3306,
 
   // Your username
   user: "root",
@@ -28,8 +28,8 @@ function runSearch() {
       message: "What would you like to do?",
       choices: [
         "View all employees",
-        "View all employees by department",
-        "View all employees by role",
+        "View all departments",
+        "View all positions",
         "Add employee",
         "Add department",
         "Add role",
@@ -43,12 +43,12 @@ function runSearch() {
         viewAllEmployees();
         break;
 
-      case "View all employees by department":
-        viewByDep();
+      case "View all departments":
+        viewDep();
         break;
 
-      case "View all employees by role":
-        viewByRole();
+      case "View all positions":
+        viewPositions();
         break;
 
       case "Add employee":
@@ -75,20 +75,28 @@ function runSearch() {
 }
 
 function viewAllEmployees() {
-  inquirer
-    .prompt({
-      name: "artist",
-      type: "input",
-      message: "What artist would you like to search for?"
-    })
-    .then(function(answer) {
-      var query = "SELECT position, song, year FROM top5000 WHERE ?";
-      connection.query(query, { artist: answer.artist }, function(err, res) {
-        if (err) throw err;
-        for (var i = 0; i < res.length; i++) {
-          console.log("Position: " + res[i].position + " || Song: " + res[i].song + " || Year: " + res[i].year);
-        }
-        runSearch();
-      });
-    });
+  console.log("Selecting all employees...\n");
+  connection.query("SELECT * FROM employee", function(err, res) {
+    if (err) throw err;
+    console.log(res);
+    runSearch();
+  });
+}
+
+function viewDep() {
+  var query = "SELECT * FROM department";
+  connection.query(query, function(err, res) {
+    if (err) throw err;
+      console.log(res);
+    runSearch();
+  });
+}
+
+function viewPositions() {
+  var query = "SELECT * FROM position";
+  connection.query(query, function(err, res) {
+    if (err) throw err;
+      console.log(res);
+    runSearch();
+  });
 }
