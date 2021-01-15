@@ -32,7 +32,7 @@ function runSearch() {
         "View all positions",
         "Add employee",
         "Add department",
-        "Add role",
+        "Add position",
         "Update employee role",
         "exit"
       ]
@@ -59,8 +59,8 @@ function runSearch() {
         addDepartment();
         break;
           
-      case "Add role":
-        addRole();
+      case "Add position":
+        addPosition();
         break;
 
       case "Update employee role":
@@ -99,4 +99,98 @@ function viewPositions() {
       console.log(res);
     runSearch();
   });
+}
+
+function addEmployee() {
+  inquirer
+    .prompt([
+      {
+        name: "id",
+        type: "input",
+        message: "Enter employee's id number: "
+      },
+      {
+        name: "firstName",
+        type: "input",
+        message: "Enter employee's first name: "
+      },
+      {
+        name: "lastName",
+        type: "input",
+        message: "Enter employee's last name: "
+      },
+      {
+        name: "positionID",
+        type: "input",
+        message: "Enter employee's position id: "
+      },
+      {
+        name: "managerID",
+        type: "input",
+        message: "Enter employee's manager id: "
+      },
+    ])
+    .then(function(answer) {
+      var query = "INSERT INTO employee SET ?";
+        connection.query(query, { id: answer.id, first_name: answer.firstName, last_name: answer.lastName, position_id: answer.positionID, manager_id: answer.managerID }, function(err, res) {
+        if (err) throw err;
+        runSearch();
+      });
+    });
+}
+
+function addDepartment() {
+  inquirer
+    .prompt([
+      {
+        name: "id",
+        type: "input",
+        message: "Enter the department id number: "
+      },
+      {
+        name: "depName",
+        type: "input",
+        message: "Enter the department name: "
+      }
+    ])
+    .then(function(answer) {
+      var query = "INSERT INTO department SET ?";
+        connection.query(query, { id: answer.id, dep_name: answer.depName}, function(err, res) {
+        if (err) throw err;
+        runSearch();
+      });
+    });
+}
+
+function addPosition() {
+  inquirer
+    .prompt([
+      {
+        name: "id",
+        type: "input",
+        message: "Enter the department id number: "
+      },
+      {
+        name: "title",
+        type: "input",
+        message: "Enter the position title: "
+        },
+      {
+        name: "salary",
+        type: "input",
+        message: "Enter the position salary: "
+        },
+      {
+        name: "departmentID",
+        type: "input",
+        message: "Enter the department id: "
+      }
+    ])
+    .then(function(answer) {
+      var query = "INSERT INTO department SET ?";
+        connection.query(query, { id: answer.id, title: answer.title, salary: answer.salary, department_id: answer.departmentID}, function(err, res) {
+        if (err) throw err;
+        runSearch();
+      });
+    });
 }
