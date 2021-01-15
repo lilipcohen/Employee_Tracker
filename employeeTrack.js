@@ -1,5 +1,6 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
+const { title } = require("process");
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -33,7 +34,7 @@ function runSearch() {
         "Add employee",
         "Add department",
         "Add position",
-        "Update employee role",
+        "Update employee's position",
         "exit"
       ]
     })
@@ -63,8 +64,8 @@ function runSearch() {
         addPosition();
         break;
 
-      case "Update employee role":
-        updateRole();
+      case "Update employee's position":
+        updatePosition();
         break;
           
       case "exit":
@@ -75,10 +76,9 @@ function runSearch() {
 }
 
 function viewAllEmployees() {
-  console.log("Selecting all employees...\n");
-  connection.query("SELECT * FROM employee", function(err, res) {
+  connection.query("SELECT * FROM employee", (err, res) => {
     if (err) throw err;
-    console.log(res);
+    console.table(res);
     runSearch();
   });
 }
@@ -87,7 +87,7 @@ function viewDep() {
   var query = "SELECT * FROM department";
   connection.query(query, function(err, res) {
     if (err) throw err;
-      console.log(res);
+      console.table(res);
     runSearch();
   });
 }
@@ -96,7 +96,7 @@ function viewPositions() {
   var query = "SELECT * FROM position";
   connection.query(query, function(err, res) {
     if (err) throw err;
-      console.log(res);
+      console.table(res);
     runSearch();
   });
 }
@@ -187,10 +187,34 @@ function addPosition() {
       }
     ])
     .then(function(answer) {
-      var query = "INSERT INTO department SET ?";
+      var query = "INSERT INTO position SET ?";
         connection.query(query, { id: answer.id, title: answer.title, salary: answer.salary, department_id: answer.departmentID}, function(err, res) {
         if (err) throw err;
         runSearch();
       });
     });
 }
+
+function updatePosition() {
+    inquirer
+    .prompt(
+    {
+      name: "positionID",
+      type: "input",
+      message: "What is the id of the position you wish to change?"
+    },
+    {
+        name: "position_change",
+        type: "input",
+        message: "Enter the position you wish to change to: "
+    })
+    .then(function (answer) {
+    const query = "UPDATE position SET ? WHERE ?";
+        connection.query(query, [{ title: answer.position_change },{id: answer.positionID }],
+    function(err, res) {
+      if (err) throw err;
+    }
+    )
+    runSearch();
+    }
+)}
