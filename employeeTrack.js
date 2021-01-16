@@ -197,7 +197,7 @@ function addPosition() {
 
 function updatePosition() {
     inquirer
-    .prompt(
+    .prompt([
     {
       name: "positionID",
       type: "input",
@@ -207,12 +207,13 @@ function updatePosition() {
         name: "position_change",
         type: "input",
         message: "Enter the position you wish to change to: "
-    })
+    }
+    ])
     .then(function (answer) {
     const query = "UPDATE position SET ? WHERE ?";
         connection.query(query, [{ title: answer.position_change },{id: answer.positionID }],
-    function(err, res) {
-      if (err) throw err;
+        function(err, res) {
+        if (err) throw err;
     }
     )
     runSearch();
